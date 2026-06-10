@@ -1,0 +1,14 @@
+numpy<2
+pandas==2.1.4
+matplotlib
+opencv-python==4.11.0.86
+scikit-image
+pillow
+tqdm
+pycocotools
+ultralytics
+pulse2percept
+jupyter
+ipykernel
+pyttsx3
+streamlit
