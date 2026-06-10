@@ -57,12 +57,23 @@ class COCOLoader:
     def get_image_ids(self, cat_names: Optional[list[str]] = None) -> list[int]:
         """
         Devuelve IDs de imágenes que contienen al menos una de las clases indicadas.
-        Si cat_names es None, devuelve todos los IDs del conjunto.
+
+        Nota: pycocotools.COCO.getImgIds(catIds=[...]) aplica semántica de
+        intersección para múltiples categorías. Para este proyecto necesitamos
+        unión: persona OR auto OR semáforo, etc. Por eso se consulta cada clase
+        por separado y se combinan los IDs.
         """
         if cat_names is None:
             return self.coco.getImgIds()
-        cat_ids = [self.cat_name_to_id[n] for n in cat_names if n in self.cat_name_to_id]
-        return self.coco.getImgIds(catIds=cat_ids)
+
+        image_ids = set()
+        for name in cat_names:
+            cat_id = self.cat_name_to_id.get(name)
+            if cat_id is None:
+                continue
+            image_ids.update(self.coco.getImgIds(catIds=[cat_id]))
+
+        return sorted(image_ids)
 
     # ------------------------------------------------------------------
     # Carga de imagen
@@ -123,6 +134,9 @@ class COCOLoader:
                 "category": cat_name,
                 "priority": priority,
                 "ann_id": ann["id"],
+                "area": float(ann.get("area", mask.sum())),
+                "area_pct": float(mask.mean()),
+                "bbox": ann.get("bbox"),
             })
 
         # Ordenar de menor a mayor prioridad (1 = máxima)

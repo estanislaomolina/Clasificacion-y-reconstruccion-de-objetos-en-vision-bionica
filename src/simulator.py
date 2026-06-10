@@ -8,21 +8,10 @@ from typing import Literal
 import numpy as np
 import cv2
 
-ImplantType = Literal["argus2", "prima", "alpha_ams"]
+ImplantType = Literal["argus2", "prima", "alphaams"]
 
 
 class ProstheticSimulator:
-    """
-    Simula la percepción de una imagen a través de un implante retinal.
-
-    Parámetros
-    ----------
-    implant_type : ImplantType
-        'argus2'      — Argus II (60 electrodos, baja resolución)
-        'prima'       — PRIMA (~378 electrodos, media resolución)
-        'alpha_ams'   — Grilla personalizada de alta resolución (ejemplo: 1024 electrodos)
-    """
-
     def __init__(self, implant_type: ImplantType = "argus2"):
         self.implant_type = implant_type
         self._model = None
@@ -40,9 +29,21 @@ class ProstheticSimulator:
             self._implant = p2p.implants.PRIMA()
             self._model = p2p.models.ScoreboardModel()
 
-        elif self.implant_type == "alpha_ams":
+        elif self.implant_type in ["alphaams", "alpha_ams", "alpha-ams"]:
+            if not hasattr(p2p.implants, "AlphaAMS"):
+                raise ImportError(
+                    "Tu versión de pulse2percept no tiene p2p.implants.AlphaAMS. "
+                    "Actualizá pulse2percept o verificá el nombre del implante disponible."
+                )
+
             self._implant = p2p.implants.AlphaAMS()
             self._model = p2p.models.ScoreboardModel()
+
+        else:
+            raise ValueError(
+                f"Implante no reconocido: {self.implant_type}. "
+                "Usá uno de: 'argus2', 'prima', 'alphaams'."
+            )
 
         self._model.build()
 
