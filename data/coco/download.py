@@ -9,7 +9,7 @@ FILES = {
         "http://images.cocodataset.org/zips/val2017.zip",
 }
 
-download_dir = "."
+download_dir = "./data/coco/"
 
 for filename, url in FILES.items():
     output_path = os.path.join(download_dir, filename)
