@@ -8,7 +8,7 @@ from typing import Literal
 import numpy as np
 import cv2
 
-ImplantType = Literal["argus2", "prima", "custom_grid"]
+ImplantType = Literal["argus2", "prima", "alpha_ams"]
 
 
 class ProstheticSimulator:
@@ -20,7 +20,7 @@ class ProstheticSimulator:
     implant_type : ImplantType
         'argus2'      — Argus II (60 electrodos, baja resolución)
         'prima'       — PRIMA (~378 electrodos, media resolución)
-        'custom_grid' — Grilla personalizada de alta resolución (cota superior)
+        'alpha_ams'   — Grilla personalizada de alta resolución (ejemplo: 1024 electrodos)
     """
 
     def __init__(self, implant_type: ImplantType = "argus2"):
@@ -40,13 +40,8 @@ class ProstheticSimulator:
             self._implant = p2p.implants.PRIMA()
             self._model = p2p.models.ScoreboardModel()
 
-        elif self.implant_type == "custom_grid":
-            # Grilla de alta resolución: 30x30 electrodos, separación 100 µm
-            self._implant = p2p.implants.ProsthesisSystem(
-                earray=p2p.implants.ElectrodeGrid(
-                    (30, 30), 100, names=("A", "1")
-                )
-            )
+        elif self.implant_type == "alpha_ams":
+            self._implant = p2p.implants.AlphaAMS()
             self._model = p2p.models.ScoreboardModel()
 
         self._model.build()
