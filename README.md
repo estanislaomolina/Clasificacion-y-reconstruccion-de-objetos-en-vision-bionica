@@ -68,4 +68,4 @@ Las variables principales son:
 |-----------------|------------|--------------------------------------|
 | `argus2`        | 60         | Argus II — referencia clínica        |
 | `prima`         | ~378       | PRIMA — implante subretinal moderno  |
-| `custom_grid`   | 900 (30×30)| Grilla de alta resolución — cota sup.|
+| `alphaams`   | 1600)| Alpha AMS — implante de alta resolución |
