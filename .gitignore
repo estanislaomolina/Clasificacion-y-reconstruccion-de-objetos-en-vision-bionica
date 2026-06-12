@@ -23,6 +23,8 @@ data/coco/val2017/
 data/coco/train2017/
 data/coco/annotations/
 
+data/masks/  # máscaras generadas (se reproducen corriendo el código)
+
 # Outputs generados (se reproducen corriendo el código)
 # outputs/figures/
 # outputs/percepts/
