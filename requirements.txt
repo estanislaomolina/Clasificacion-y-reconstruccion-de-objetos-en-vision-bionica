@@ -1,14 +1,36 @@
+# Core scientific stack
 numpy<2
 pandas==2.1.4
+scipy
 matplotlib
-opencv-python==4.11.0.86
-scikit-image
+seaborn
 pillow
 tqdm
+
+# Machine learning
+scikit-learn
+joblib
+
+# Deep learning
+torch
+torchvision
+
+# Image processing
+opencv-python==4.11.0.86
+scikit-image
+
+# COCO annotations
 pycocotools
-ultralytics
+
+# Prosthetic vision simulation
 pulse2percept
+
+# Notebooks
 jupyter
 ipykernel
+
+# Utilities
+gdown
+ultralytics
 pyttsx3
 streamlit

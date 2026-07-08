@@ -55,3 +55,8 @@ src/simulation/extra
 
 #autenticacion
 oauth_client.json
+
+# informe
+informe/figs 
+informe/main.tex
+informe/poster.tex
