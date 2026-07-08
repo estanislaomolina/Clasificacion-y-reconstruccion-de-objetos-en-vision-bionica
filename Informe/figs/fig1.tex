@@ -1,0 +1,216 @@
+\documentclass[tikz,border=4mm]{standalone}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{graphicx}
+\usepackage{array}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shadows.blur, fit, babel}
+
+\definecolor{mainblue}{HTML}{12355B}
+\definecolor{softblue}{HTML}{EAF2F8}
+\definecolor{accent}{HTML}{C0392B}
+\definecolor{goodgreen}{HTML}{1B7F5C}
+\definecolor{softgreen}{HTML}{EAF7F0}
+\definecolor{purple}{HTML}{6C3483}
+\definecolor{softpurple}{HTML}{F4ECF7}
+\definecolor{darkgray}{HTML}{2E2E2E}
+
+% ------------------------------------------------------------
+% Imagen con placeholder si el archivo todavía no existe
+% ------------------------------------------------------------
+\newcommand{\pipelineimage}[3]{%
+    \IfFileExists{#3}{%
+        \includegraphics[width=#1,height=#2,keepaspectratio]{#3}%
+    }{%
+        \fbox{%
+            \begin{minipage}[c][#2][c]{#1}
+                \centering
+                \scriptsize
+                \texttt{\detokenize{#3}}\\[-1pt]
+                \tiny agregar imagen
+            \end{minipage}%
+        }%
+    }%
+}
+
+\newcommand{\captionedimage}[4]{%
+    \begin{tabular}{c}
+        \pipelineimage{#1}{#2}{#3}\\[-1pt]
+        {\scriptsize #4}
+    \end{tabular}%
+}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    font=\small,
+    node distance=1.65cm and 1.75cm,
+    data/.style={
+        rectangle,
+        rounded corners=3mm,
+        draw=mainblue,
+        very thick,
+        fill=softblue,
+        minimum width=3.4cm,
+        minimum height=2.45cm,
+        align=center,
+        inner sep=6pt,
+        blur shadow={shadow blur steps=5, shadow xshift=1pt, shadow yshift=-1pt}
+    },
+    process/.style={
+        rectangle,
+        rounded corners=3mm,
+        draw=accent,
+        very thick,
+        fill=white,
+        minimum width=3.4cm,
+        minimum height=2.45cm,
+        align=center,
+        inner sep=6pt,
+        blur shadow={shadow blur steps=5, shadow xshift=1pt, shadow yshift=-1pt}
+    },
+    classcard/.style={
+        rectangle,
+        rounded corners=3mm,
+        draw=purple,
+        very thick,
+        fill=softpurple,
+        minimum width=3.4cm,
+        minimum height=2.45cm,
+        align=center,
+        inner sep=6pt,
+        blur shadow={shadow blur steps=5, shadow xshift=1pt, shadow yshift=-1pt}
+    },
+    reconcard/.style={
+        rectangle,
+        rounded corners=3mm,
+        draw=goodgreen,
+        very thick,
+        fill=softgreen,
+        minimum width=3.4cm,
+        minimum height=2.45cm,
+        align=center,
+        inner sep=6pt,
+        blur shadow={shadow blur steps=5, shadow xshift=1pt, shadow yshift=-1pt}
+    },
+    arrow/.style={
+        -{Latex[length=3mm,width=2mm]},
+        very thick,
+        draw=mainblue
+    },
+    classarrow/.style={
+        -{Latex[length=3mm,width=2mm]},
+        very thick,
+        draw=purple
+    },
+    reconarrow/.style={
+        -{Latex[length=3mm,width=2mm]},
+        very thick,
+        draw=goodgreen
+    },
+    note/.style={
+        font=\scriptsize,
+        align=center,
+        text=darkgray
+    }
+]
+
+% ============================================================
+% FILA SUPERIOR: generación de perceptos
+% ============================================================
+
+\node[data] (mask) {
+    \captionedimage{2.55cm}{1.55cm}{figs/COCO_IMAGE.JPG}{Imagen COCO}\\[3pt]
+    {\scriptsize }
+};
+
+\node[process, right=of mask] (predict) {
+    \pipelineimage{2.35cm}{1.35cm}{figs/coco_mask.png}\\[4pt]
+    {\bfseries Mascara COCO}\\[-1pt]
+    {\scriptsize objeto binario}
+};
+
+\node[data, right=of predict] (percepts) {
+    \begin{tabular}{ccc}
+        \captionedimage{0.88cm}{0.88cm}{figs/percept_argusII.png}{Argus II} &
+        \captionedimage{0.88cm}{0.88cm}{figs/percept_prima.png}{PRIMA} &
+        \captionedimage{0.88cm}{0.88cm}{figs/percept_alphaAMS.png}{Alpha-AMS}
+    \end{tabular}\\[5pt]
+    {\scriptsize Perceptos simulados}
+};
+
+\draw[arrow] (mask) --
+    node[above, note] {}
+    (predict);
+
+\draw[arrow] (predict) --
+    node[above, note] {\texttt{pulse2percept}}
+    (percepts);
+
+% ============================================================
+% RAMA DE CLASIFICACIÓN
+% ============================================================
+
+
+
+\node[classcard, right=2.2cm of percepts] (classout) {
+    {\scriptsize Clase predicha}\\[-1pt]
+    {\scriptsize \textbf{PERSONA}}
+};
+
+\draw[classarrow] (percepts.east) --
+    node[above, note, text=purple] {entrada al clasificador}
+    (classout.west);
+
+
+\node[
+    draw=purple,
+    rounded corners=3mm,
+    thick,
+    dashed,
+    fit=(classout),
+    inner xsep=0.35cm,
+    inner ysep=0.50cm,
+    label={[text=purple,font=\bfseries\small]above:{Clasificación de perceptos}}
+] {};
+
+% ============================================================
+% RAMA DE RECONSTRUCCIÓN
+% ============================================================
+
+
+
+\node[reconcard, below=2.3cm of percepts] (reconstructed) {
+    \captionedimage{0.88cm}{0.88cm}{figs/reconstructed.png}
+    {\bfseries U-Net}\\[-1pt]
+    {\scriptsize Máscaras reconstruidas}
+};
+
+\draw[reconarrow] (percepts.south) --
+    ++(0,-0.8)
+    -|
+    node[pos=0.30,right,note,text=goodgreen]{entrada a\\U-Net}
+    (reconstructed.north);
+
+\node[
+    draw=goodgreen,
+    rounded corners=3mm,
+    thick,
+    dashed,
+    fit=(reconstructed),
+    inner xsep=0.35cm,
+    inner ysep=0.50cm,
+    label={[text=goodgreen,font=\bfseries\small]above:{Reconstrucción de máscaras}}
+] {};
+
+% ============================================================
+% TEXTO INFERIOR
+% ============================================================
+
+
+\end{tikzpicture}
+
+\end{document}

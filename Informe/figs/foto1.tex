@@ -1,0 +1,134 @@
+\documentclass[tikz,border=4mm]{standalone}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-noshorthands]{babel}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shadows.blur, fit, babel}
+
+\definecolor{mainblue}{HTML}{12355B}
+\definecolor{softblue}{HTML}{EAF2F8}
+\definecolor{accent}{HTML}{C0392B}
+\definecolor{goodgreen}{HTML}{1B7F5C}
+\definecolor{softgray}{HTML}{F7F7F7}
+\definecolor{darkgray}{HTML}{2E2E2E}
+
+\begin{document}
+
+\begin{tikzpicture}[
+    font=\small,
+    node distance=1.25cm,
+    stage/.style={
+        rectangle,
+        rounded corners=3mm,
+        draw=mainblue,
+        very thick,
+        fill=softblue,
+        minimum width=3.1cm,
+        minimum height=1.35cm,
+        align=center,
+        blur shadow={shadow blur steps=5, shadow xshift=1pt, shadow yshift=-1pt}
+    },
+    smallstage/.style={
+        rectangle,
+        rounded corners=2mm,
+        draw=mainblue,
+        thick,
+        fill=white,
+        minimum width=2.6cm,
+        minimum height=0.8cm,
+        align=center
+    },
+    arrow/.style={
+        -{Latex[length=3mm,width=2mm]},
+        very thick,
+        draw=mainblue
+    },
+    note/.style={
+        font=\scriptsize,
+        align=center,
+        text=darkgray
+    }
+]
+
+% NODOS PRINCIPALES
+\node[stage] (mask) {
+    \textbf{Máscara COCO}\\
+    objeto binario
+};
+
+\node[stage, right=1.35cm of mask] (stim) {
+    \textbf{ImageStimulus}\\
+    imagen de estimulación
+};
+
+\node[stage, right=1.35cm of stim] (implant) {
+    \textbf{Implante retinal}\\
+    Argus II / PRIMA / Alpha-AMS
+};
+
+\node[stage, right=1.35cm of implant] (model) {
+    \textbf{ScoreboardModel}\\
+    simulación espacial
+};
+
+\node[stage, right=1.35cm of model] (percept) {
+    \textbf{Percepto}\\
+    imagen simulada
+};
+
+% FLECHAS PRINCIPALES
+\draw[arrow] (mask) -- node[above, note] {letterbox\\256$\times$256} (stim);
+
+\draw[arrow] (stim) -- node[above, note] {resize a\\\texttt{implant.shape}} (implant);
+
+\draw[arrow] (implant) -- node[above, note] {\texttt{implant.stim}} (model);
+
+\draw[arrow] (model) -- node[above, note] {\texttt{predict\_percept}} (percept);
+
+% DETALLES INFERIORES
+\node[smallstage, below=1.0cm of stim] (signal) {
+    \textbf{Señal}\\
+    activación por electrodo
+};
+
+\node[smallstage, below=1.0cm of percept] (png) {
+    \textbf{PNG}\\
+    percepto normalizado
+};
+
+\draw[arrow, dashed] (implant.south) |- (signal.east);
+\draw[arrow, dashed] (percept.south) -- (png.north);
+
+% MARCO pulse2percept
+\node[
+    draw=accent,
+    rounded corners=3mm,
+    thick,
+    dashed,
+    fit=(stim)(implant)(model),
+    inner xsep=0.35cm,
+    inner ysep=0.45cm,
+    label={[text=accent, font=\bfseries\small]above:{Simulación con \texttt{pulse2percept}}}
+] {};
+
+% TEXTO INFERIOR
+\node[
+    below=2.5cm of model,
+    anchor = north,
+    text width=15cm,
+    align=center,
+    execute at begin node=\centering,
+    font=\scriptsize,
+    text=darkgray
+] {
+    
+\subsection*{Para cada muestra se generaron tres perceptos, uno por implante.
+    La misma máscara produce distintas representaciones según la geometría del arreglo de electrodos.}
+
+};
+
+\end{tikzpicture}
+
+\end{document}

@@ -52,3 +52,6 @@ oral/
 # extras no entregables
 src/reconstruction/extra
 src/simulation/extra
+
+#autenticacion
+oauth_client.json
