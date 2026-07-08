@@ -1,0 +1,5 @@
+model,test_accuracy,n_components,n_neighbors,weights,metric,val_accuracy
+knn_argus2,0.561122244488978,25,7,distance,euclidean,0.6212424849699398
+knn_prima,0.5711422845691383,50,11,distance,manhattan,0.6092184368737475
+knn_alphams,0.5671342685370742,100,7,distance,euclidean,0.6112224448897795
+knn_multi_implant,0.6112224448897795,100,11,distance,euclidean,0.6212424849699398

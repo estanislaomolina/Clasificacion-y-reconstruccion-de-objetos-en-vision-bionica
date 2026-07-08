@@ -1,0 +1,27 @@
+{
+  "model": "unet_prima",
+  "implant": "prima",
+  "best_lr": 0.0001,
+  "best_val_dice": 0.8715677056461573,
+  "epochs": 30,
+  "batch_size": 16,
+  "img_size": 256,
+  "bce_weight": 0.5,
+  "classes": [
+    "person",
+    "car",
+    "chair",
+    "dining table"
+  ],
+  "lr_candidates": [
+    0.0001,
+    0.0003,
+    0.001
+  ],
+  "early_stopping": {
+    "monitor": "val_dice",
+    "patience": 5,
+    "min_delta": 0.0
+  },
+  "lr_search_csv": "/content/drive/MyDrive/tp_final_vision_artificial/outputs/metrics/lr_search_unet_prima.csv"
+}

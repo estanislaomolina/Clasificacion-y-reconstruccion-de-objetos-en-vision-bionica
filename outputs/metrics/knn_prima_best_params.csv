@@ -1,0 +1,2 @@
+n_components,n_neighbors,weights,metric,val_accuracy
+50,11,distance,manhattan,0.6092184368737475

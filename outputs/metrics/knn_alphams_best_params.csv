@@ -1,0 +1,2 @@
+n_components,n_neighbors,weights,metric,val_accuracy
+100,7,distance,euclidean,0.6112224448897795
